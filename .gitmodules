@@ -1,0 +1,6 @@
+[submodule "backend"]
+	path = backend
+	url = git@github.com:strawhattom/battle-judge-back.git
+[submodule "frontend"]
+	path = frontend
+	url = git@github.com:strawhattom/battle-judge-front.git
