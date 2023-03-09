@@ -2,7 +2,7 @@ FROM node:18-alpine as builder
 
 WORKDIR /app
 
-COPY ./frontend/package*.json .
+COPY ./frontend/package*.json ./
 
 RUN npm pkg delete scripts.prepare
 RUN HUSKY=0 npm ci --only=production --ignore-scripts
@@ -15,7 +15,7 @@ FROM node:18-alpine as PWA
 
 WORKDIR /app
 
-COPY ./backend/package*.json .
+COPY ./backend/package*.json ./
 
 RUN npm pkg delete scripts.prepare
 RUN HUSKY=0 npm ci --only=production
