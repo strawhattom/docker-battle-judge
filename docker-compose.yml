@@ -1,0 +1,46 @@
+version: "3"
+services:
+  bj-mariadb:
+    image: mariadb:10.9
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=example # REDACTED
+      - MARIADB_DATABASE=battle_judge # REDACTED
+    networks:
+      - backend_bridge
+    ports:
+      - 3306
+    # Bind sql script to init database
+    volumes:
+      - ./backend/db/scripts/maria-init.sql:/docker-entrypoint-initdb.d/maria-init.sql:ro
+  bj-mongodb:
+    image: mongo:6.0.3
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=example # REDACTED
+      - MONGO_INITDB_ROOT_PASSWORD=example # REDACTED
+    networks:
+      - backend_bridge
+    ports:
+      - 27017
+    # Bind js script to init database
+    volumes:
+      - ./backend/db/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  pwa:
+    build: .
+    environment:
+      - PORT=3000
+      - MONGO_URI=mongodb://example:example@bj-mongodb:27017 # REDACTED
+      - MARIADB_URI=mariadb://root:example@bj-mariadb:3306/battle_judge # REDACTED
+      - JWT_SECRET=$${{m5@4jp&2Pkkfq&m6jh&@p5CjY}} # REDACTED
+      - NODE_ENV=production
+    networks:
+      - backend_bridge
+    ports:
+      - 3000:3000
+    depends_on:
+      - bj-mariadb
+      - bj-mongodb
+
+networks:
+  backend_bridge:
