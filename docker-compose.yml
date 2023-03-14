@@ -10,7 +10,7 @@ services:
       - backend_bridge
     ports:
       - 3306
-    # Bind sql script to init database
+    # Bind les script(s) sql pour initialiser la base de données mariadb
     volumes:
       - ./backend/db/scripts/maria-init.sql:/docker-entrypoint-initdb.d/maria-init.sql:ro
   bj-mongodb:
@@ -23,24 +23,57 @@ services:
       - backend_bridge
     ports:
       - 27017
-    # Bind js script to init database
+    # Bind les script(s) js pour initialiser la base de données mongodb
     volumes:
       - ./backend/db/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-  pwa:
-    build: .
+  # pwa:
+  #   build: .
+  #   environment:
+  #     - PORT=3000 # REDACTED
+  #     - MONGO_URI=mongodb://example:example@bj-mongodb:27017 # REDACTED
+  #     - MARIADB_URI=mariadb://root:example@bj-mariadb:3306/battle_judge # REDACTED
+  #     - JWT_SECRET=example # REDACTED
+  #     - NODE_ENV=production
+  #   networks:
+  #     - backend_bridge
+  #   ports:
+  #     - 3000:3000 # REDACTED
+  #   depends_on:
+  #     - bj-mariadb
+  #     - bj-mongodb
+
+  # Nom du service et du host du container 
+  # (doit être le même que dans la configuration nginx dans le dossier `dossier_backend/nginx.conf`)
+  backend:
+    build: ./backend
     environment:
-      - PORT=3000
+      - PORT=3000 # REDACTED
       - MONGO_URI=mongodb://example:example@bj-mongodb:27017 # REDACTED
       - MARIADB_URI=mariadb://root:example@bj-mariadb:3306/battle_judge # REDACTED
-      - JWT_SECRET=$${{m5@4jp&2Pkkfq&m6jh&@p5CjY}} # REDACTED
+      - JWT_SECRET=example # REDACTED
       - NODE_ENV=production
     networks:
       - backend_bridge
+      - frontend_bridge
     ports:
-      - 3000:3000
+      - 3000 # REDACTED
     depends_on:
       - bj-mariadb
       - bj-mongodb
 
+  frontend:
+    # On build le front avec node et on démarre un serveur nginx au port 80 (http)
+    build: ./frontend
+    environment:
+      - NODE_ENV=production
+    networks:
+      - backend_bridge
+      - frontend_bridge
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+
 networks:
   backend_bridge:
+  frontend_bridge:
