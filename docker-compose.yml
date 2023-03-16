@@ -8,8 +8,6 @@ services:
       - MARIADB_DATABASE=battle_judge # REDACTED
     networks:
       - backend_bridge
-    ports:
-      - 3306
     # Bind les script(s) sql pour initialiser la base de données mariadb
     volumes:
       - ./backend/db/scripts/maria-init.sql:/docker-entrypoint-initdb.d/maria-init.sql:ro
@@ -21,8 +19,6 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=example # REDACTED
     networks:
       - backend_bridge
-    ports:
-      - 27017
     # Bind les script(s) js pour initialiser la base de données mongodb
     volumes:
       - ./backend/db/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
@@ -55,8 +51,6 @@ services:
     networks:
       - backend_bridge
       - frontend_bridge
-    ports:
-      - 3000 # REDACTED
     depends_on:
       - bj-mariadb
       - bj-mongodb
