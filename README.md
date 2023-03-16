@@ -10,5 +10,5 @@ git submodule update --init --recursive
 ## Run
 
 ```bash
-docker compose up -d --bash
+docker compose up -d --build
 ```
